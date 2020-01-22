@@ -42,7 +42,7 @@ public abstract class AbstractFacade<T> {
 
     }
 
-    public void remove(long entity) {
+    public void remove(Object entity) {
         EntityManager em = getEntityManager();
         try {
             em.getTransaction().begin();

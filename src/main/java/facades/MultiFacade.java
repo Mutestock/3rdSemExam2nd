@@ -1,6 +1,10 @@
 package facades;
 
+import entities.Booking;
+import entities.Image;
+import entities.Kayak;
 import entities.User;
+import entities.Reservation;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -13,7 +17,11 @@ public class MultiFacade<T> extends AbstractFacade {
 
     private static EntityManagerFactory emf;
     //Create BasicExtensionFacade with null value
-    //private static BasicExtensionFacade<Example> basicExampleFacade;
+    private static BasicExtensionFacade<Image> basicImageFacade;
+    private static BasicExtensionFacade<User> basicUserFacade;
+    private static BasicExtensionFacade<Booking> basicBookingFacade;
+    private static BasicExtensionFacade<Kayak> basicKayakFacade;
+    private static BasicExtensionFacade<Reservation> basicReservationFacade;
 
     public MultiFacade(Class entityClass) {
         super(entityClass);
@@ -22,11 +30,33 @@ public class MultiFacade<T> extends AbstractFacade {
     public MultiFacade(Class entityClass, EntityManagerFactory emf) {
         super(entityClass);
         this.emf = emf;
-        //Conditional instantiation of basic extensions
-        //if (ENTITY_CLASS.getSimpleName().toUpperCase().equals("Example")) {
-        //    System.out.println("Instantiating..");
-        //basicExampleFacade = new BasicExtensionFacade(Example.class, emf);
-        //}
+
+        //Delete if switch under is fully functional
+        //String simpleEntityClassName = ENTITY_CLASS.getSimpleName().toUpperCase();
+        switch (ENTITY_CLASS.getSimpleName().toUpperCase()) {
+
+            case "USER":
+                basicBookingFacade = new BasicExtensionFacade(Booking.class, emf);
+                break;
+
+            case "BOOKING":
+                basicUserFacade = new BasicExtensionFacade(User.class, emf);
+                basicKayakFacade = new BasicExtensionFacade(Kayak.class, emf);
+                break;
+
+            case "KAYAK":
+                basicBookingFacade = new BasicExtensionFacade(Booking.class, emf);
+                basicReservationFacade = new BasicExtensionFacade(Reservation.class, emf);
+                break;
+
+            case "IMAGE":
+                basicKayakFacade = new BasicExtensionFacade(Kayak.class, emf);
+                break;
+
+            case "RESERVATION":
+                basicKayakFacade = new BasicExtensionFacade(Booking.class, emf);
+                break;
+        }
     }
 
     @Override
@@ -35,7 +65,7 @@ public class MultiFacade<T> extends AbstractFacade {
     }
 
     @Override
-    public void remove(long entity) {
+    public void remove(Object entity) {
         System.out.println(find(entity).getClass().getSimpleName().toUpperCase());
         Uprooter.valueOf(find(entity).getClass().getSimpleName().toUpperCase()).uproot(find(entity));
         EntityManager em = getEntityManager();
@@ -50,70 +80,117 @@ public class MultiFacade<T> extends AbstractFacade {
 
     //This enum "uproots" entities to prevent parent/child removal collision
     private enum Uprooter {
-        EXAMPLE {
+        USER {
             @Override
             public void uproot(Object obj) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                try {
+                    for (Booking booking : ((List<Booking>) basicBookingFacade.findAll())) {
+                        if (booking.getUser().getUserName().equals(((User) obj).getUserName())) {
+                            booking.setUser(null);
+                            basicBookingFacade.edit(booking);
+                        }
+                    }
+                } catch (Exception e) {
+                    System.out.println("Unable to uproot USER from BOOKING - " + e);
+                }
+            }
+        },
+        BOOKING {
+            @Override
+            public void uproot(Object obj) {
+                try {
+                    for (User user : ((List<User>) basicUserFacade.findAll())) {
+                        for (Booking booking : user.getBookingList()) {
+                            if (booking.getUser().getUserName().equals(((Booking) obj).getUser().getUserName())) {
+                                List<Booking> switcheroo = user.getBookingList();
+                                switcheroo.remove(obj);
+                                user.setBookingList(switcheroo);
+                                basicUserFacade.edit(user);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    System.out.println("Unable to uproot USER from BOOKING - " + e);
+                }
+                try {
+                    for (Kayak kayak : ((List<Kayak>) basicKayakFacade.findAll())) {
+                        if (kayak.getBooking().getId().equals(((Booking) obj).getId())) {
+                            kayak.setBooking(null);
+                            basicKayakFacade.edit(kayak);
+                        }
+                    }
+                } catch (Exception e) {
+                    System.out.println("Unable to uproot KAYAK from BOOKING - " + e);
+                }
+            }
+        },
+        KAYAK {
+            @Override
+            public void uproot(Object obj) {
+                try {
+                    for (Booking booking : ((List<Booking>) basicBookingFacade.findAll())) {
+                        for (Kayak kayak : booking.getKayakList()) {
+                            if (kayak.getId().equals(((Kayak) obj).getId())) {
+                                List<Kayak> switcheroo = booking.getKayakList();
+                                switcheroo.remove(obj);
+                                booking.setKayakList(switcheroo);
+                                basicBookingFacade.edit(booking);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    System.out.println("Unable to uproot Booking from KAYAK - " + e);
+                }
+                try {
+                    for (Reservation reservation : ((List<Reservation>) basicReservationFacade.findAll())) {
+                        for (Kayak kayak : reservation.getKayakList()) {
+                            if (kayak.getId().equals(((Kayak) obj).getId())) {
+                                List<Kayak> switcheroo = reservation.getKayakList();
+                                switcheroo.remove(obj);
+                                reservation.setKayakList(switcheroo);
+                                basicReservationFacade.edit(reservation);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    System.out.println("Unable to uproot RESERVATION from KAYAK - " + e);
+                }
+            }
+        },
+        IMAGE {
+            @Override
+            public void uproot(Object obj) {
+                for (Kayak kayak : ((List<Kayak>) basicKayakFacade.findAll())) {
+                    for (Image image : kayak.getImageList()) {
+                        if (image.getId().equals(((Image) obj).getId())) {
+                            List<Image> switcheroo = kayak.getImageList();
+                            switcheroo.remove(obj);
+                            kayak.setImageList(switcheroo);
+                            basicKayakFacade.edit(kayak);
+                        }
+                    }
+                }
+            }
+        },
+        RESERVATION {
+            @Override
+            public void uproot(Object obj) {
+                try {
+                    for (Kayak kayak : ((List<Kayak>) basicKayakFacade.findAll())) {
+                        for (Reservation reservation : kayak.getReservationList()) {
+                            if (reservation.getId().equals(((Reservation) obj).getId())) {
+                                List<Reservation> switcheroo = kayak.getReservationList();
+                                switcheroo.remove(obj);
+                                kayak.setReservationList(switcheroo);
+                                basicKayakFacade.edit(kayak);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    System.out.println("Unable to uproot KAYAK from RESERVATION- " + e);
+                }
             }
         };
-        
-// Full Example
-//        DAYPLAN {
-//            @Override
-//            public void uproot(Object obj) {
-//                try {
-//                    for (Object mp : basicMenuFacade.findAll()) {
-//                        for (DayPlan dp : ((MenuPlan) mp).getDayPlanList()) {
-//                            if ((dp.getId().equals(((DayPlan) obj).getId()))) {
-//                                List<DayPlan> switcheroo = ((MenuPlan) mp).getDayPlanList();
-//                                switcheroo.remove(dp);
-//                                ((MenuPlan) mp).setDayPlanList(switcheroo);
-//                                basicMenuFacade.edit(mp);
-//                            }
-//                        }
-//                    }
-//                } catch (Exception e) {
-//                    System.out.println("Unable to uproot DAYPLAN from MENUPLAN - " + e);
-//                }
-//            }
-//        }, ITEM {
-//            @Override
-//            public void uproot(Object obj) {
-//                try {
-//                    for (Object mp : basicMenuFacade.findAll()) {
-//                        for (Item item : ((MenuPlan) mp).getItemList()) {
-//                            if ((item.getId().equals(((Item) obj).getId()))) {
-//                                List<Item> switcheroo = ((MenuPlan) mp).getItemList();
-//                                switcheroo.remove(item);
-//                                ((MenuPlan) mp).setItemList(switcheroo);
-//                                basicMenuFacade.edit(mp);
-//                            }
-//                        }
-//                    }
-//                } catch (Exception e) {
-//                    System.out.println("Unable to uproot ITEM from MENUPLAN- " + e);
-//                }
-//            }
-//        }, MENUPLAN {
-//            @Override
-//            public void uproot(Object obj) {
-//                try {
-//                    for (Object user : basicUserFacade.findAll()) {
-//                        for (MenuPlan menuPlan : ((User) user).getMenuPlanList()) {
-//                            if ((menuPlan.getId().equals(((Item) obj).getId()))) {
-//                                List<MenuPlan> switcheroo = ((User) user).getMenuPlanList();
-//                                switcheroo.remove(menuPlan);
-//                                ((User) user).setMenuPlanList(switcheroo);
-//                                basicUserFacade.edit(user);
-//                            }
-//                        }
-//                    }
-//                } catch (Exception e) {
-//                    System.out.println("Unable to uproot MENUPLAN from from USER - " + e);
-//                }
-//            }
-//        };
-        
 
         public abstract void uproot(Object obj);
     }

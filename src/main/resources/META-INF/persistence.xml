@@ -8,6 +8,10 @@
     <class>entities.DayPlan</class>
     <class>entities.Item</class>
     <class>entities.MtMSideBranchhasOtMBiExample</class>
+    <class>entities.Image</class>
+    <class>entities.Booking</class>
+    <class>entities.Kayak</class>
+    <class>entities.Reservation</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <!-- DO NOT remove the line below. It's not set by the  entityUtils.EMF_Creator -->

@@ -8,10 +8,13 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -23,6 +26,10 @@ import org.mindrot.jbcrypt.BCrypt;
 
 @Entity 
 @Table(name = "users")
+@NamedQueries({
+    @NamedQuery(name = "User.removaAll", query = "DELETE FROM User u"),
+    @NamedQuery(name = "User.findByName", query = "SELECT u FROM User u WHERE u.userName = :userName")
+})
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -43,6 +50,8 @@ public class User implements Serializable {
         @JoinColumn(name = "role_name", referencedColumnName = "role_name")})
     @ManyToMany
     private List<Role> roleList = new ArrayList();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Booking> bookingList = new ArrayList();;
 
     public List<String> getRolesAsStrings() {
         if (roleList.isEmpty()) {
@@ -96,5 +105,15 @@ public class User implements Serializable {
         roleList.add(userRole);
     }
 
+    public List<Booking> getBookingList() {
+        return bookingList;
+    }
 
+    public void setBookingList(List<Booking> bookingList) {
+        this.bookingList = bookingList;
+    }
+
+    public void addToBookingList(Booking booking){
+        this.bookingList.add(booking);
+    }
 }
