@@ -1,15 +1,16 @@
 package utils;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author Henning
  */
+@Disabled
 public class ExternalAPIManagementTest {
 
     private final ExternalAPIManagement EM = new ExternalAPIManagement();

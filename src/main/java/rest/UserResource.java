@@ -123,11 +123,17 @@ public class UserResource {
                 @ApiResponse(responseCode = "200", description = "The person was created and persisted"),
                 @ApiResponse(responseCode = "400", description = "No users was created or persisted")})
     public void createUser(User entity) {
-        entity.setRoleList(
-                Stream.of(
-                        new Role("user")
-                ).collect(Collectors.toList())
-        );
+        Role roleInsertion = (Role) ROLE_FACADE.find("user");
+        if (roleInsertion == null) {
+            ROLE_FACADE.create(new Role("user"));
+        }
+        if (entity.getRoleList().isEmpty()) {
+            entity.setRoleList(
+                    Stream.of(
+                            roleInsertion
+                    ).collect(Collectors.toList())
+            );
+        }
         USER_FACADE.create(entity);
     }
 
