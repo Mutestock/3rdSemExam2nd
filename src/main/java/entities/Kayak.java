@@ -44,7 +44,7 @@ public class Kayak implements Serializable {
     @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
     @Size(max = 255)
     @Column(name = "name")
     private String name;
@@ -88,11 +88,11 @@ public class Kayak implements Serializable {
         this.personsAllowed = personsAllowed;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

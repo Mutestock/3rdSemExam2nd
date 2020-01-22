@@ -1,5 +1,6 @@
 package dto;
 
+import entities.Booking;
 import entities.User;
 import java.util.List;
 
@@ -11,11 +12,12 @@ public class UserDTO {
 
     private String userName;
     private String password;
-    private List menuPlanList;
+    private List<Booking> bookingList;
 
     public UserDTO(User user) {
         this.userName = user.getUserName();
         this.password = user.getUserPass();
+        this.bookingList = user.getBookingList();
     }
 
     public String getUserName() {
@@ -34,12 +36,12 @@ public class UserDTO {
         this.password = password;
     }
 
-    public List getMenuPlanList() {
-        return menuPlanList;
+    public List<Booking> getBookingList() {
+        return bookingList;
     }
 
-    public void setMenuPlanList(List menuPlanList) {
-        this.menuPlanList = menuPlanList;
+    public void setBookingList(List<Booking> bookingList) {
+        this.bookingList = bookingList;
     }
 
 }

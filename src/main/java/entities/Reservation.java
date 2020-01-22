@@ -40,7 +40,7 @@ public class Reservation implements Serializable {
     @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
     @Size(max = 255)
     @Column(name = "dateFrom")
     @Temporal(TemporalType.DATE)
@@ -60,11 +60,11 @@ public class Reservation implements Serializable {
         this.dateTo = dateTo;
     }
     
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

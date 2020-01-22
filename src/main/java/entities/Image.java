@@ -32,7 +32,7 @@ public class Image implements Serializable {
     @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
     @Size(max = 255)
     @Column(name = "imageURL")
     private String imageURL;
@@ -44,11 +44,11 @@ public class Image implements Serializable {
         this.imageURL = imageURL;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
