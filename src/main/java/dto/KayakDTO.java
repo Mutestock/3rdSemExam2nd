@@ -12,6 +12,8 @@ import java.util.List;
  */
 public class KayakDTO {
 
+    //Actively choosing to include id
+    private long id;
     private Booking booking;
     private String color;
     private String description;
@@ -23,6 +25,7 @@ public class KayakDTO {
     private String year;
 
     public KayakDTO(Kayak kayak) {
+        this.id = kayak.getId();
         this.booking = kayak.getBooking();
         this.color = kayak.getColor();
         this.description = kayak.getDescription();
@@ -34,6 +37,14 @@ public class KayakDTO {
         this.year = kayak.getYear();
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+    
     public Booking getBooking() {
         return booking;
     }

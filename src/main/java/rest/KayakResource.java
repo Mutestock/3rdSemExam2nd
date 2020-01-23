@@ -42,7 +42,7 @@ import utils.EMF_Creator;
                 description = "Backend of the 3rdSemExam project"
         ),
         tags = {
-            @Tag(name = "Kayak resource", description = "API related to Kayaks")
+            @Tag(name = "Kayak Resource", description = "API related to Kayaks")
         },
         servers = {
             @Server(
@@ -99,7 +99,7 @@ public class KayakResource {
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "All Kayaks",
-            tags = {"Kayak  Resource"},
+            tags = {"Kayak Resource"},
             responses = {
                 @ApiResponse(
                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = KayakDTO.class))),
@@ -132,7 +132,7 @@ public class KayakResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     // @RolesAllowed("admin")
-    @Operation(summary = "Kayak Deletion", tags = {"Kayak  Resource"},
+    @Operation(summary = "Kayak Deletion", tags = {"Kayak Resource"},
             responses = {
                 @ApiResponse(responseCode = "200", description = "Kayak Deleted"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided to delete")
@@ -145,7 +145,7 @@ public class KayakResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     //@RolesAllowed("admin")
-    @Operation(summary = "Kayak Editing", tags = {"Kayak  Resource"},
+    @Operation(summary = "Kayak Editing", tags = {"Kayak Resource"},
             responses = {
                 @ApiResponse(responseCode = "200", description = "Kayak Edited"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body to edit")

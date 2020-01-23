@@ -48,7 +48,7 @@ public class Booking implements Serializable {
     private Date bookingDate = java.util.Calendar.getInstance().getTime();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "booking", fetch = FetchType.LAZY)
     private List<Kayak> kayakList = new ArrayList();
-    ;
+    
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User user;
 

@@ -42,7 +42,7 @@ import utils.EMF_Creator;
                 description = "Backend of the 3rdSemExam project"
         ),
         tags = {
-            @Tag(name = "Reservation resource", description = "API related to Reservations")
+            @Tag(name = "Reservation Resource", description = "API related to Reservations")
         },
         servers = {
             @Server(
@@ -99,7 +99,7 @@ public class ReservationResource {
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "All Reservations",
-            tags = {"Reservation  Resource"},
+            tags = {"Reservation Resource"},
             responses = {
                 @ApiResponse(
                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = ReservationDTO.class))),
@@ -132,7 +132,7 @@ public class ReservationResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     // @RolesAllowed("admin")
-    @Operation(summary = "Reservation Deletion", tags = {"Reservation  Resource"},
+    @Operation(summary = "Reservation Deletion", tags = {"Reservation Resource"},
             responses = {
                 @ApiResponse(responseCode = "200", description = "Reservation Deleted"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided to delete")
@@ -145,7 +145,7 @@ public class ReservationResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     //@RolesAllowed("admin")
-    @Operation(summary = "Reservation Editing", tags = {"Reservation  Resource"},
+    @Operation(summary = "Reservation Editing", tags = {"Reservation Resource"},
             responses = {
                 @ApiResponse(responseCode = "200", description = "Reservation Edited"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body to edit")

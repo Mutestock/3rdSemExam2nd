@@ -1,6 +1,7 @@
 package dto;
 
 import entities.Booking;
+import entities.Role;
 import entities.User;
 import java.util.List;
 
@@ -11,29 +12,21 @@ import java.util.List;
 public class UserDTO {
 
     private String userName;
-    private String password;
     private List<Booking> bookingList;
+    private List<Role> roleList;
 
     public UserDTO(User user) {
         this.userName = user.getUserName();
-        this.password = user.getUserPass();
         this.bookingList = user.getBookingList();
+        this.roleList = user.getRoleList();
     }
 
     public String getUserName() {
         return userName;
     }
-
+    
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public List<Booking> getBookingList() {

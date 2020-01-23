@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -78,7 +79,6 @@ public class UserResource {
         return "{\"msg\":\"Connection to the 'User' api section is online\"}";
     }
 
-    //Currently rather pointless since Users don't use IDs
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}")
@@ -90,13 +90,14 @@ public class UserResource {
                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDTO.class))),
                 @ApiResponse(responseCode = "200", description = "The requested resources was returned"),
                 @ApiResponse(responseCode = "400", description = "The server cannot or will not process the request and no resources were returned")})
-    public UserDTO getUser(@PathParam("id") int id) throws IOException, InterruptedException, ExecutionException {
+    public UserDTO getUser(@PathParam("id") String id) throws IOException, InterruptedException, ExecutionException {
         return new UserDTO(((User) USER_FACADE.find(id)));
     }
 
     @GET
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin"})
     @Operation(summary = "Read all users",
             tags = {"User Resource"},
             responses = {
@@ -161,5 +162,25 @@ public class UserResource {
             })
     public void editRest(User entity) {
         USER_FACADE.edit(entity);
+    }
+
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    //@RolesAllowed("admin")
+    @Path("/promote/{id}")
+    @Operation(summary = "Promotes User to admin. For testing", tags = {"User Resource"},
+            responses = {
+                @ApiResponse(responseCode = "200", description = "User Edited"),
+                @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body to edit")
+            })
+    public void promote(@PathParam("id") String id) throws IOException, InterruptedException, ExecutionException {
+        User user = (User) USER_FACADE.find(id);
+        Role roleInsertion = (Role) ROLE_FACADE.find("admin");
+        if (roleInsertion == null) {
+            ROLE_FACADE.create(new Role("admin"));
+        }
+        user.addRole(roleInsertion);
+        USER_FACADE.edit(user);
     }
 }

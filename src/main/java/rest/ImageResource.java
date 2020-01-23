@@ -42,7 +42,7 @@ import utils.EMF_Creator;
                 description = "Backend of the 3rdSemExam project"
         ),
         tags = {
-            @Tag(name = "Image resource", description = "API related to Images")
+            @Tag(name = "Image Resource", description = "API related to Images")
         },
         servers = {
             @Server(
@@ -99,7 +99,7 @@ public class ImageResource {
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "All Images",
-            tags = {"Image  Resource"},
+            tags = {"Image Resource"},
             responses = {
                 @ApiResponse(
                         content = @Content(mediaType = "application/json", schema = @Schema(implementation = ImageDTO.class))),
@@ -132,7 +132,7 @@ public class ImageResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     // @RolesAllowed("admin")
-    @Operation(summary = "Image Deletion", tags = {"Image  Resource"},
+    @Operation(summary = "Image Deletion", tags = {"Image Resource"},
             responses = {
                 @ApiResponse(responseCode = "200", description = "Image Deleted"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided to delete")
@@ -145,7 +145,7 @@ public class ImageResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     //@RolesAllowed("admin")
-    @Operation(summary = "Image Editing", tags = {"Image  Resource"},
+    @Operation(summary = "Image Editing", tags = {"Image Resource"},
             responses = {
                 @ApiResponse(responseCode = "200", description = "Image Edited"),
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body to edit")
