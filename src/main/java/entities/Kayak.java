@@ -70,7 +70,7 @@ public class Kayak implements Serializable {
     private List<Reservation> reservationList = new ArrayList();
     @JoinColumn(name = "Booking_id", referencedColumnName = "id")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Booking booking;
+    private Booking booking = null;
     @JoinTable(name = "Kayak_Image", joinColumns = {
         @JoinColumn(name = "Kayak_id", referencedColumnName = "id")}, inverseJoinColumns = {
         @JoinColumn(name = "Image_id", referencedColumnName = "id")})

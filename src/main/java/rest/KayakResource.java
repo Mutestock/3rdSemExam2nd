@@ -1,6 +1,7 @@
 package rest;
 
 import dto.KayakDTO;
+import entities.Image;
 import entities.Kayak;
 import facades.MultiFacade;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
@@ -61,6 +62,7 @@ public class KayakResource {
 
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory(EMF_Creator.DbSelector.DEV, EMF_Creator.Strategy.CREATE);
     private static final MultiFacade<Kayak> KAYAK_FACADE = new MultiFacade(Kayak.class, EMF);
+    private static final MultiFacade<Kayak> IMAGE_FACADE = new MultiFacade(Image.class, EMF);
 
     @Context
     private UriInfo context;
@@ -108,6 +110,7 @@ public class KayakResource {
     public List<KayakDTO> getAllRest() throws IOException, InterruptedException, ExecutionException {
         List<KayakDTO> dpDTOList = new ArrayList<>();
         for (Object dp : KAYAK_FACADE.findAll()) {
+            ((Kayak)dp).setPersonsAllowed(2);
             dpDTOList.add(new KayakDTO(((Kayak) dp)));
         }
         return dpDTOList;
@@ -125,6 +128,7 @@ public class KayakResource {
                 @ApiResponse(responseCode = "200", description = "The person was created and persisted"),
                 @ApiResponse(responseCode = "400", description = "No users was created or persisted")})
     public void createRest(Kayak entity) {
+        IMAGE_FACADE.create( entity.getImageList().get(0));
         KAYAK_FACADE.create(entity);
     }
 
@@ -151,6 +155,9 @@ public class KayakResource {
                 @ApiResponse(responseCode = "400", description = "Not all arguments provided with the body to edit")
             })
     public void editRest(Kayak entity) {
+        if(entity.getImageList().get(0).getId()==null){
+            IMAGE_FACADE.create(entity.getImageList().get(0));
+        }
         KAYAK_FACADE.edit(entity);
     }
 }
